@@ -23,7 +23,6 @@ public class Main {
         String ouputPath = sc.nextLine();
 
         if(GenerateEmails(path, ouputPath, capacity)) System.out.println("Emails Generated successfully");
-
     }
 
 
@@ -33,19 +32,24 @@ public class Main {
         try(Scanner file = new Scanner(data); BufferedWriter f_writer = new BufferedWriter(new FileWriter(outputPath, true))){
             int nLines = countNumOfLinesIn(data);
             capacity = capacity == 0 ?  nLines : capacity;
-            file.useDelimiter("[,\n]");
+            file.useDelimiter("[\n]");
             User.setMaxMailCapacity(capacity);
             System.out.println("Capacity = "+capacity+" "+", Data Length = "+nLines);
             ArrayList<User> usrs = new ArrayList<>();
             code = outputPath.length();
             while(file.hasNext()){
                 code++;
-                String[] line = file.nextLine().split(",");
+                String[] line = file.nextLine().split("[,\\s]+");
                 String firstName = line[0].trim();
                 String lastName = line[1].trim();
                 lastName+=Integer.toString(code);
-                String department = line[2].trim();
-                usrs.add(new User(firstName, lastName, department));
+                if(line.length == 3 && firstName != null && lastName != null){
+                    String department = line[2].trim();
+                    usrs.add(new User(firstName, lastName, department));
+                }
+                else{
+                    usrs.add(new User(firstName, lastName));
+                }
             }
 
             System.out.println("---------------------------------------------------------------");
@@ -70,4 +74,3 @@ public class Main {
         return lines;
     }
 }
-
